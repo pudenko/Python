@@ -1,6 +1,17 @@
 import random
+from threading import Timer
+
 import requests
 from paho.mqtt import client as mqtt_client
+import time
+
+count = 0
+def timermqtt(count):
+ for _ in range(10):
+    print (count)
+    count = count + 1
+    time.sleep(1)
+
 
 
 def telegram_bot_sendtext(bot_message):
@@ -15,7 +26,7 @@ def telegram_bot_sendtext(bot_message):
 
 # test = telegram_bot_sendtext("Error Ivankov connect")
 
-count = 55
+#count = 55
 broker = 'node.pudenko.com'
 port = 1883
 topic = "Ivankov"
@@ -44,7 +55,7 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
+        timermqtt(count)
     client.subscribe(topic)
     client.on_message = on_message
 
@@ -53,6 +64,7 @@ def run():
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
+
 
 
 if __name__ == '__main__':
