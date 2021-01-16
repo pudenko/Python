@@ -1,9 +1,18 @@
+from multiprocessing import Process
 import random
 import requests
 from paho.mqtt import client as mqtt_client
-import time
+import pudenkotimer
 
 
+broker = 'node.pudenko.com'
+port = 1883
+topic = "Ivankov"
+# generate client ID with pub prefix randomly
+client_id = f'python-mqtt-{random.randint(0, 100)}'
+# username = 'emqx'
+# password = 'public'
+count = 0
 
 def timer():
  s = 0
@@ -11,7 +20,7 @@ def timer():
  h = 0
  while s<=60:
     print (h, 'Hours', m, 'Minutes', s, 'Seconds')
-    time.sleep(1)
+    pudenkotimer.sleep(1)
     s+=1
     if s == 60:
         m+=1
@@ -20,17 +29,6 @@ def timer():
         h+=1
         m = 0
         s = 0
-
-
-
-count = 0
-def timermqtt(count):
- for _ in range(10):
-    print (count)
-    count = count + 1
-    time.sleep(1)
-
-
 
 def telegram_bot_sendtext(bot_message):
     bot_token = '1428837212:AAGr9AnSJOc4MjJTVSynivoPCvDHxyKgj6Y'
@@ -42,19 +40,7 @@ def telegram_bot_sendtext(bot_message):
     return response.json()
 
 
-# test = telegram_bot_sendtext("Error Ivankov connect")
-
-#count = 55
-broker = 'node.pudenko.com'
-port = 1883
-topic = "Ivankov"
-# generate client ID with pub prefix randomly
-client_id = f'python-mqtt-{random.randint(0, 100)}'
-
-
-# username = 'emqx'
-# password = 'public'
-
+ # test = telegram_bot_sendtext("Error Ivankov connect")
 
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
@@ -73,19 +59,23 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
+        # pudenkotimer.timer()
     client.subscribe(topic)
     client.on_message = on_message
 
 
 def run():
-    # timerr = timer()
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
 
 
 
-
 if __name__ == '__main__':
     run()
+    # p1 = Process(target=pudenkotimer.f())
+    # p2 = Process(target=run())
+    # p1.start()
+    # p2.start()
+    # p1.join()
+    # p2.join()
