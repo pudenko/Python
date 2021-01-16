@@ -1,9 +1,27 @@
 import random
-from threading import Timer
-
 import requests
 from paho.mqtt import client as mqtt_client
 import time
+
+
+
+def timer():
+ s = 0
+ m = 0
+ h = 0
+ while s<=60:
+    print (h, 'Hours', m, 'Minutes', s, 'Seconds')
+    time.sleep(1)
+    s+=1
+    if s == 60:
+        m+=1
+        s = 0
+    elif m ==60:
+        h+=1
+        m = 0
+        s = 0
+
+
 
 count = 0
 def timermqtt(count):
@@ -55,15 +73,17 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        timermqtt(count)
+
     client.subscribe(topic)
     client.on_message = on_message
 
 
 def run():
+    # timerr = timer()
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
+
 
 
 
