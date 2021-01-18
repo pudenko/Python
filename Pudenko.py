@@ -58,8 +58,13 @@ def connect_mqtt() -> mqtt_client:
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
+        data = 1
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        # pudenkotimer.timer()
+        if data == 1:
+            print ("666")
+
+
+
     client.subscribe(topic)
     client.on_message = on_message
 
@@ -68,6 +73,7 @@ def run():
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
+
 
 
 
